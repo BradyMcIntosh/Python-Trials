@@ -1,0 +1,4 @@
+This is a sample text file. It contains many stop-words that should be removed by the remove_stop_words program.
+However...
+It may not work perfectly. It could be done more easily with the SpaCy library, and I could use more practice with Python.
+It will do for now, I suppose.
