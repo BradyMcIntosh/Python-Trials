@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="76fc3348-60fa-46e6-99cf-67d0321c3ddd" name="Default Changelist" comment="" />
+    <list default="true" id="76fc3348-60fa-46e6-99cf-67d0321c3ddd" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/text_gen_rnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/text_gen_rnn.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,8 +30,9 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -43,7 +48,28 @@
       <recent name="C:\Users\Brady\Dropbox\_Code\Python Trials" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.text_gen_rnn">
+  <component name="RunManager" selected="Python.clean_text">
+    <configuration name="clean_text" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Python Trials" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/clean_text.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="read_dir" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Python Trials" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -109,6 +135,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.clean_text" />
         <item itemvalue="Python.text_gen_rnn" />
         <item itemvalue="Python.remove_stop_words" />
         <item itemvalue="Python.read_dir" />
@@ -126,51 +153,80 @@
       <option name="presentableId" value="Default" />
       <updated>1580924380897</updated>
     </task>
+    <task id="LOCAL-00001" summary="Added text parsing &amp; value mapping">
+      <created>1582178813853</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1582178813853</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added text parsing &amp; value mapping" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added text parsing &amp; value mapping" />
   </component>
   <component name="WindowStateProjectService">
     <state x="4201" y="1144" key="#Inspections" timestamp="1582145294534">
       <screen x="3840" y="1072" width="1536" height="824" />
     </state>
     <state x="4201" y="1144" key="#Inspections/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582145294534" />
-    <state x="4292" y="1184" key="FileChooserDialogImpl" timestamp="1582150462186">
+    <state x="4264" y="1080" width="804" height="808" key="CommitChangelistDialog2" timestamp="1582178813267">
       <screen x="3840" y="1072" width="1536" height="824" />
     </state>
+    <state x="4264" y="1080" width="804" height="808" key="CommitChangelistDialog2/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582178813267" />
+    <state x="377" y="92" key="FileChooserDialogImpl" timestamp="1582234371366">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="377" y="92" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1582234371366" />
     <state x="4292" y="1184" key="FileChooserDialogImpl/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582150462186" />
-    <state width="1515" height="210" key="GridCell.Tab.0.bottom" timestamp="1582178447414">
+    <state width="1493" height="195" key="GridCell.Tab.0.bottom" timestamp="1582533707833">
       <screen x="3840" y="1072" width="1536" height="824" />
     </state>
     <state width="1259" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1580932065572" />
-    <state width="1515" height="210" key="GridCell.Tab.0.bottom/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582178447414" />
-    <state width="1515" height="210" key="GridCell.Tab.0.center" timestamp="1582178447414">
+    <state width="1493" height="195" key="GridCell.Tab.0.bottom/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582533707833" />
+    <state width="1493" height="195" key="GridCell.Tab.0.center" timestamp="1582533707833">
       <screen x="3840" y="1072" width="1536" height="824" />
     </state>
     <state width="1259" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1580932065572" />
-    <state width="1515" height="210" key="GridCell.Tab.0.center/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582178447414" />
-    <state width="1515" height="210" key="GridCell.Tab.0.left" timestamp="1582178447414">
+    <state width="1493" height="195" key="GridCell.Tab.0.center/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582533707833" />
+    <state width="1493" height="195" key="GridCell.Tab.0.left" timestamp="1582533707833">
       <screen x="3840" y="1072" width="1536" height="824" />
     </state>
     <state width="1259" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1580932065572" />
-    <state width="1515" height="210" key="GridCell.Tab.0.left/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582178447414" />
-    <state width="1515" height="210" key="GridCell.Tab.0.right" timestamp="1582178447414">
+    <state width="1493" height="195" key="GridCell.Tab.0.left/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582533707833" />
+    <state width="1493" height="195" key="GridCell.Tab.0.right" timestamp="1582533707833">
       <screen x="3840" y="1072" width="1536" height="824" />
     </state>
     <state width="1259" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1580932065572" />
-    <state width="1515" height="210" key="GridCell.Tab.0.right/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582178447414" />
-    <state x="4021" y="1072" key="SettingsEditor" timestamp="1582150464528">
+    <state width="1493" height="195" key="GridCell.Tab.0.right/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582533707833" />
+    <state x="4021" y="1072" key="SettingsEditor" timestamp="1582521536601">
       <screen x="3840" y="1072" width="1536" height="824" />
     </state>
-    <state x="151" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1581699755028" />
-    <state x="4021" y="1072" key="SettingsEditor/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582150464528" />
+    <state x="151" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1582234423930" />
+    <state x="4021" y="1072" key="SettingsEditor/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582521536601" />
+    <state x="4201" y="1218" key="Vcs.Push.Dialog.v2" timestamp="1582178853164">
+      <screen x="3840" y="1072" width="1536" height="824" />
+    </state>
+    <state x="4201" y="1218" key="Vcs.Push.Dialog.v2/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582178853164" />
     <state x="3933" y="1165" width="1350" height="638" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1582149075442">
       <screen x="3840" y="1072" width="1536" height="824" />
     </state>
     <state x="3933" y="1165" width="1350" height="638" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582149075442" />
-    <state x="4305" y="1310" key="com.intellij.ide.util.TipDialog" timestamp="1582178483681">
+    <state x="4305" y="1310" key="com.intellij.ide.util.TipDialog" timestamp="1582521510138">
       <screen x="3840" y="1072" width="1536" height="824" />
     </state>
-    <state x="388" y="196" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1581693497458" />
-    <state x="4305" y="1310" key="com.intellij.ide.util.TipDialog/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582178483681" />
+    <state x="388" y="196" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1582234141588" />
+    <state x="4305" y="1310" key="com.intellij.ide.util.TipDialog/0.0.2560.1400/3840.1072.1536.824@3840.1072.1536.824" timestamp="1582521510138" />
+    <state x="451" y="259" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1582234947364">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="451" y="259" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1280.680@0.0.1280.680" timestamp="1582234947364" />
+    <state x="343" y="134" key="git4idea.merge.GitPullDialog" timestamp="1582234348262">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="343" y="134" key="git4idea.merge.GitPullDialog/0.0.1280.680@0.0.1280.680" timestamp="1582234348262" />
     <state x="303" y="1" width="672" height="678" key="search.everywhere.popup" timestamp="1581699685592">
       <screen x="0" y="0" width="1280" height="680" />
     </state>

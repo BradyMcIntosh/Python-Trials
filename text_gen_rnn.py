@@ -34,3 +34,5 @@ print('  ...\n}')
 
 # Show how the first 13 characters from the text are mapped to integers
 print ('{} ---- characters mapped to int ---- > {}'.format(repr(text[:20]), text_as_int[:20]))
+
+
