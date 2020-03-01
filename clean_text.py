@@ -63,14 +63,14 @@ def regex_edit(line):
 
     # List of complex expressions to delete matches for - in order of precedence
     list_delete_content = [r"<p><span class=(\"|\')pagenum\1>.*?</span></p>",
-                           r"<span class=(\"|\')pagenum\1>.*?</span>",
+                           r"<span class=(\"|\')(pagenum)\1>.*?</span>",
                            r"<p class=(\"|\')(ph2|center pfirst)\1.*?>.*?</p>",
                            r"<(h[0-9]+?).*?>.*?</\1>",
                            r"<ins class=(\"|\')(mycorr|authcorr)\1.*?>.*?</ins>",
                            r"<p class=(\"|\')illustration( chapter)?\1>.*?</p>",
                            r"<p class=(\"|\')(ph3|center pfirst)\1>.*?</p>",
                            r"(?<=>)CHAPTER.*?(?=<)",
-                           r"<p class=\"title\">.*?\.",
+                           r"<p class=(\"|\')(title)\1>.*?\.",
                            r"<(a).*?>.*?</\1>"
                            ]
 
@@ -119,6 +119,11 @@ def regex_edit(line):
     # This pattern matches terminating tags surrounded by alphanumeric/punctual characters.
     # Matches must be preceded by at least one character, and NOT followed by two.
     # The first character after the match must, also, not be a space.
+
+    # Add line breaks at 'break' tags
+    if COUNT:
+        log_count += len(re.findall(r"<br/>", line))
+    line = re.sub(r"<br/>", "\n", line)
 
     # Remove all remaining tags
     for exp in list_delete_tags:
