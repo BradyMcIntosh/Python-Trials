@@ -2,26 +2,32 @@
 # Some manual processing, particularly at the beginning and end of the file, will be necessary.
 # Otherwise, this program will remove page numbers, images, redundant line breaks, and other markup elements.
 
-# TODO: Read all files in a "text-source" folder, clean and add to a "text-clean" folder
-# TODO: (in a new file) Combine various clean texts into larger files organized by author, genre, etc.
+# Instructions on use:
+# Mode 1: Clean a file
+# -- This mode will accept htm/html file names and create a cleaned text file in the same directory as the source file.
+# Mode 2: Clean a folder
+# -- This mode will accept folder names, read all files in the submitted folder, and create clean versions in a
+#   separate folder
 
-import re, html, unidecode
-import string, time
+import html
+import os
+import re
+import time
+import unidecode
 from pathlib import Path
+
 from cchardet import UniversalDetector
 
-__time__ = True
-__count__ = True
+TIME = True
+COUNT = True
 
-time_html = 0
-time_regex = 0
-count_html = 0
-count_regex = 0
+log_time = 0
+log_count = 0
 
 
 # Replace html codes and unicode symbols with respective ascii symbols
 def html_edit(line):
-    global count_html
+    global log_count
 
     # To match letter codes:
     r"&[a-zA-Z0-9]+;"
@@ -35,17 +41,17 @@ def html_edit(line):
     # To match non-ascii characters
     r"[^\x00-\x7F]"
 
-    # Remove leading spaces
+    # Remove leading spaces/tabs
     line = line.lstrip(' \t')
 
     # Replace html escape codes with respective symbols
-    if __count__:
-        count_html += len(re.findall(r"&#?[a-zA-Z0-9]+?;", line))
+    if COUNT:
+        log_count += len(re.findall(r"&#?[a-zA-Z0-9]+?;", line))
     line = html.unescape(line)
 
     # Replace non-ascii characters with ascii equivalent strings
-    if __count__:
-        count_html += len(re.findall(r"[^\x00-\x7F]", line))
+    if COUNT:
+        log_count += len(re.findall(r"[^\x00-\x7F]", line))
     line = unidecode.unidecode(line)
 
     return line
@@ -53,7 +59,7 @@ def html_edit(line):
 
 # delete/replace markup syntax using regex
 def regex_edit(line):
-    global count_regex
+    global log_count
 
     # List of complex expressions to delete matches for - in order of precedence
     list_delete_content = [r"<p><span class=(\"|\')pagenum\1>.*?</span></p>",
@@ -64,7 +70,8 @@ def regex_edit(line):
                            r"<p class=(\"|\')illustration( chapter)?\1>.*?</p>",
                            r"<p class=(\"|\')(ph3|center pfirst)\1>.*?</p>",
                            r"(?<=>)CHAPTER.*?(?=<)",
-                           r"<p class=\"title\">.*?\."
+                           r"<p class=\"title\">.*?\.",
+                           r"<(a).*?>.*?</\1>"
                            ]
 
     # List of complex expressions to delete surroundings for - in order of precedence
@@ -72,26 +79,26 @@ def regex_edit(line):
     #                        ]
 
     # List of tag expressions to delete matches for - in order of precedence
-    list_delete_tags = [r"</?[ahpibu].*?>",
-                        r"</?(small|strong|span|div|br|em|ins|cite|blockquote).*?>"
+    list_delete_tags = [r"</?[ahpibutdr].*?>",
+                        r"</?(small|strong|span|font|sup|div|br|em|ins|cite|blockquote).*?>"
                         ]
 
     # (?<=x) lookbehind for x
     # (?<!x) negative lookbehind for x
     # Replace mid-sentence line breaks with spaces
-    if __count__:
-        count_regex += len(re.findall(r"(?<=.)(?<!>)[\r\n]", line))
+    if COUNT:
+        log_count += len(re.findall(r"(?<=.)(?<!>)[\r\n]", line))
     line = re.sub(r"(?<=.)(?<!>)[\r\n]", " ", line)
 
     # Remove all other line breaks
-    if __count__:
-        count_regex += len(re.findall(r"[\r\n]", line))
+    if COUNT:
+        log_count += len(re.findall(r"[\r\n]", line))
     line = re.sub(r"[\r\n]", "", line)
 
     # Remove complex tags with inner content
     for exp in list_delete_content:
-        if __count__:
-            count_regex += len(re.findall(exp, line))
+        if COUNT:
+            log_count += len(re.findall(exp, line))
         line = re.sub(exp, "", line)
 
     # Remove complex surrounding tags
@@ -105,8 +112,8 @@ def regex_edit(line):
     c2 = "[A-Za-z0-9_.,:;!?\"\'$]"
 
     # Add line breaks between content blocks
-    if __count__:
-        count_regex += len(re.findall(rf"(?<={c2})</(p|u|h.|div|span)>(?!{c1}{c2})", line))
+    if COUNT:
+        log_count += len(re.findall(rf"(?<={c2})</(p|u|h.|div|span)>(?!{c1}{c2})", line))
     line = re.sub(rf"(?<={c2})</(p|u|h.|div|span)>(?!{c1}{c2})", r"</\1>\r\n", line)
     # Explanation for this pattern:
     # This pattern matches terminating tags surrounded by alphanumeric/punctual characters.
@@ -115,21 +122,26 @@ def regex_edit(line):
 
     # Remove all remaining tags
     for exp in list_delete_tags:
-        if __count__:
-            count_regex += len(re.findall(exp, line))
+        if COUNT:
+            log_count += len(re.findall(exp, line))
         line = re.sub(exp, "", line)
-
     return line
 
 
-# Open a user-specified file
-while True:
-    usr = input("Enter a file name (q to quit):\n")
-    if usr == "q":
-        break
+def read_file(usr_fil, log=None):
+    """Reads a file and returns each line as a list of strings.
+
+    :param usr_fil: Required - Input file
+    :param log: Optional - Log file
+    :return: list: A list of strings
+    """
+
+    out = ""
+
     try:
+        print(usr_fil)
         # Detect file encoding
-        file = open(usr, 'rb')
+        file = open(usr_fil, 'rb')
         det = UniversalDetector()
         for line in file.readlines():
             det.feed(line)
@@ -138,71 +150,123 @@ while True:
         det.close()
         usr_enc = det.result.get("encoding")
 
-        print(f"File encoding: {usr_enc}")
+        out += f"File encoding: {usr_enc}\n"
 
-        text_read = open(usr, 'r', encoding=usr_enc, errors='ignore')
+        # Open file using detected encoding
+        text_read = open(usr_fil, 'r', encoding=usr_enc, errors='ignore')
         text = text_read.readlines()
         text_read.close()
 
-        p = Path(usr)
-        # print(f"path = \"{p.parent}\", filename = \"{p.stem}\"")
+        return text
+    except IOError:
+        out += "\nFile reading failed\n"
+        return False
+    finally:
+        # Log info
+        if log is not None:
+            log.write(out)
+        else:
+            print(out, end='')
 
-        text_write = open(f"{p.parent}/{p.stem}.txt", "w+", encoding='utf-8', errors='replace')
 
-        time_html = 0
-        count_html = 0
-        time_regex = 0
-        count_regex = 0
+def clean_file(text_in, f_out, log=None):
+    """Cleans input text and sends it to output file.
+
+    :param text_in: Required - Input string list
+    :param f_out: Required - Output file
+    :param log: Optional - Log file
+    :return: bool: Return state
+    """
+
+    out = ""
+
+    try:
+        log_time = 0
         time_init = 0
 
         line_count = 0
-        for line in text:
+        for line in text_in:
             line_count += 1
 
-            # HTML edit section
-            if __time__:
+            # Time method calls for performance logging
+            if TIME:
                 time_init = time.perf_counter()
             line = html_edit(line)
-            if __time__:
-                time_regex += time.perf_counter() - time_init
-
-            # Regex edit section
-            if __time__:
-                time_init = time.perf_counter()
             line = regex_edit(line)
-            if __time__:
-                time_regex += time.perf_counter() - time_init
+            if TIME:
+                log_time += time.perf_counter() - time_init
 
-            text_write.write(line)
-        text_write.close()
+            f_out.write(line)
+        f_out.close()
+
         print(f"Processed {line_count} lines.")
         # Debug printout section
-        if __time__ or __count__:
+        if TIME or COUNT:
 
-            # HTML info section
-            print("HTML:  ", end="")
-            if __count__:
-                print(f"{count_html:-8d} codes   ", end="")
-            if __count__ and __time__:
-                print("--", end="")
-            if __time__:
-                print(f"{time_html:-6.2f} seconds ", end="")
-            print()
+            # Stats info
+            out += "Stats: "
+            if COUNT:
+                out += f"{log_count:-7d} edits "
+            if COUNT and TIME:
+                out += "--"
+            if TIME:
+                out += f"{log_time:-7.2f} seconds "
+            out += "\n"
 
-            # Regex info section
-            print("Regex: ", end="")
-            if __count__:
-                print(f"{count_regex:-8d} matches ", end="")
-            if __count__ and __time__:
-                print("--", end="")
-            if __time__:
-                print(f"{time_regex:-6.2f} seconds ", end="")
-            print()
+        if log is not None:
+            out += f"Created file: {f_out.name}\n\n"
+        print(f"Created file: {f_out.name}\n")
+        return True
+    except IOError:
+        out += "\nText cleaning failed\n"
+        return False
+    finally:
+        # Log info
+        if log is not None:
+            log.write(out)
+        else:
+            print(out, end='')
 
-        print(f"Created file: {p.parent}/{p.stem}.txt")
 
-    except FileNotFoundError:
-        print("Invalid file")
-    print()
+while True:
+    print("Options:\n\t1: Clean a file\n\t2: Clean a folder\n\tQ: Quit")
+    usr_opt = input("Enter an option: ")
+    if usr_opt.lower() == "q":
+        break
+    elif usr_opt == "1":
+        usr_inp = input("Enter a file name: ")
+        text = read_file(usr_inp)
+        if text:
+            p = Path(usr_inp)
+            f_out = open(f"{p.parent}/{p.stem}.txt", "w+", encoding='utf-8', errors='replace')
+            if not clean_file(text, f_out):
+                print("Error while writing file")
+        else:
+            print("Invalid file")
+    elif usr_opt == "2":
+        usr_inp = input("Enter a folder name: ")
+        log = open(f"clean_text_log.txt", "w+", encoding='utf-8')
+        try:
+            l_dir = os.listdir(usr_inp)
+            # p = Path(usr_inp)
+            for item in l_dir:
+                p = Path(item)
+                print("Reading " + item)
+                log.write("Reading " + item + "\n")
+                text = read_file(usr_inp.rstrip("/") + "/" + item, log)
+                if text:
+                    if not os.path.isdir(f"{usr_inp}-clean"):
+                        os.mkdir(f"{usr_inp}-clean")
+                    f_out = open(f"{usr_inp}-clean/{p.stem}.txt", "w+", encoding='utf-8', errors='replace')
+                    if not clean_file(text, f_out, log):
+                        print("Error while writing file")
+                else:
+                    print("Invalid file")
+        except FileNotFoundError:
+            print("Invalid directory")
+        finally:
+            log.close()
+    else:
+        print("Invalid input")
 
 # ...
