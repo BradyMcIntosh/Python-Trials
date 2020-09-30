@@ -58,12 +58,13 @@ def html_edit(line):
 
 
 # delete/replace markup syntax using regex
-def regex_edit(line):
+def regex_edit(text_edit):
     global log_count
 
     # List of complex expressions to delete matches for - in order of precedence
     list_delete_content = [r"<p><span class=(\"|\')pagenum\1>.*?</span></p>",
-                           r"<span class=(\"|\')(pagenum)\1>.*?</span>",
+                           r"<(a).*?>.*?<\/a>",
+                           r"<span class=(\"|\')(pagenum|hidden)\1>.*?</span>",
                            r"<p class=(\"|\')(ph2|center pfirst)\1.*?>.*?</p>",
                            r"<(h[0-9]+?).*?>.*?</\1>",
                            r"<ins class=(\"|\')(mycorr|authcorr)\1.*?>.*?</ins>",
@@ -71,7 +72,7 @@ def regex_edit(line):
                            r"<p class=(\"|\')(ph3|center pfirst)\1>.*?</p>",
                            r"(?<=>)CHAPTER.*?(?=<)",
                            r"<p class=(\"|\')(title)\1>.*?\.",
-                           r"<(a).*?>.*?</\1>"
+                           r"<!.*?>"
                            ]
 
     # List of complex expressions to delete surroundings for - in order of precedence
@@ -80,26 +81,26 @@ def regex_edit(line):
 
     # List of tag expressions to delete matches for - in order of precedence
     list_delete_tags = [r"</?[ahpibutdr].*?>",
-                        r"</?(small|strong|span|font|sup|div|br|em|ins|cite|blockquote).*?>"
+                        r"</?(small|strong|span|font|sup|div|br|em|ins|cite|blockquote|pre).*?>"
                         ]
 
     # (?<=x) lookbehind for x
     # (?<!x) negative lookbehind for x
     # Replace mid-sentence line breaks with spaces
     if COUNT:
-        log_count += len(re.findall(r"(?<=.)(?<!>)[\r\n]", line))
-    line = re.sub(r"(?<=.)(?<!>)[\r\n]", " ", line)
+        log_count += len(re.findall(r"(?<=.)(?<!>)[\r\n]", text_edit))
+    text_edit = re.sub(r"(?<=.)(?<!>)[\r\n]", " ", text_edit)
 
     # Remove all other line breaks
     if COUNT:
-        log_count += len(re.findall(r"[\r\n]", line))
-    line = re.sub(r"[\r\n]", "", line)
+        log_count += len(re.findall(r"[\r\n]", text_edit))
+    text_edit = re.sub(r"[\r\n]", "", text_edit)
 
     # Remove complex tags with inner content
     for exp in list_delete_content:
         if COUNT:
-            log_count += len(re.findall(exp, line))
-        line = re.sub(exp, "", line)
+            log_count += len(re.findall(exp, text_edit))
+        text_edit = re.sub(exp, "", text_edit)
 
     # Remove complex surrounding tags
     # for exp in list_delete_surround:
@@ -111,26 +112,54 @@ def regex_edit(line):
     c1 = "[A-Za-z0-9_.,:;!? \"\'$]"
     c2 = "[A-Za-z0-9_.,:;!?\"\'$]"
 
-    # Add line breaks between content blocks
+    # Add line breaks at end of tag blocks (<\p> for example)
+    # Also removes any number of trailing whitespaces preceding the tag
     if COUNT:
-        log_count += len(re.findall(rf"(?<={c2})</(p|u|h.|div|span)>(?!{c1}{c2})", line))
-    line = re.sub(rf"(?<={c2})</(p|u|h.|div|span)>(?!{c1}{c2})", r"</\1>\r\n", line)
+        log_count += len(re.findall(r"[\s\t]*</(p)>", text_edit))
+    text_edit = re.sub(r"[\s\t]*</(p)>", "\n", text_edit)
+
+    # Add line breaks between content blocks
+    # if COUNT:
+    #     log_count += len(re.findall(rf"(?<={c2})</(p|u|h.|div|span)>(?!{c1}{c2})", text_edit))
+    # text_edit = re.sub(rf"(?<={c2})</(p|u|h.|div|span)>(?!{c1}{c2})", r"</\1>\r\n", text_edit)
     # Explanation for this pattern:
     # This pattern matches terminating tags surrounded by alphanumeric/punctual characters.
     # Matches must be preceded by at least one character, and NOT followed by two.
     # The first character after the match must, also, not be a space.
 
     # Add line breaks at 'break' tags
+    # Accounts for <br>, <br/>, and <br /> formats
     if COUNT:
-        log_count += len(re.findall(r"<br/>", line))
-    line = re.sub(r"<br/>", "\n", line)
+        log_count += len(re.findall(r"<br[\s\t]*/?>", text_edit))
+    text_edit = re.sub(r"<br[\s\t]*/?>", "\n", text_edit)
 
     # Remove all remaining tags
     for exp in list_delete_tags:
         if COUNT:
-            log_count += len(re.findall(exp, line))
-        line = re.sub(exp, "", line)
-    return line
+            log_count += len(re.findall(exp, text_edit))
+        text_edit = re.sub(exp, "", text_edit)
+
+    # Remove excessive spaces
+    if COUNT:
+        log_count += len(re.findall(r"[ ]+", text_edit))
+    text_edit = re.sub(r"[ ]+", " ", text_edit)
+
+    # Replace excessive newlines and other whitespace
+    # Replaces with a single newline
+    if COUNT:
+        log_count += len(re.findall(r"\n[\s\n\t]+", text_edit))
+    text_edit = re.sub(r"\n[\s\n\t]+", "\n", text_edit)
+
+    # Remove leading whitespace (necessary?)
+    # if COUNT:
+    #     log_count += len(re.findall(r"\n[\s\n\t]*", text_edit))
+    # text_edit = re.sub(r"\n[\s\n\t]*", "\n", text_edit)
+
+    # Report how many unwanted symbols were found after processing
+    stranges = len(re.findall(r"[<>]", text_edit))
+    print("Found {0} strange symbols!".format(stranges))
+
+    return text_edit
 
 
 def read_file(usr_fil, log=None):
@@ -138,7 +167,7 @@ def read_file(usr_fil, log=None):
 
     :param usr_fil: Required - Input file
     :param log: Optional - Log file
-    :return: list: A list of strings
+    :return: str: The file contents as a string
     """
 
     out = ""
@@ -159,7 +188,7 @@ def read_file(usr_fil, log=None):
 
         # Open file using detected encoding
         text_read = open(usr_fil, 'r', encoding=usr_enc, errors='ignore')
-        text = text_read.readlines()
+        text = text_read.read()
         text_read.close()
 
         return text
@@ -189,22 +218,17 @@ def clean_file(text_in, f_out, log=None):
         log_time = 0
         time_init = 0
 
-        line_count = 0
-        for line in text_in:
-            line_count += 1
+        # Time method calls for performance logging
+        if TIME:
+            time_init = time.perf_counter()
+        text_edit = html_edit(text_in)
+        text_edit = regex_edit(text_edit)
+        if TIME:
+            log_time += time.perf_counter() - time_init
 
-            # Time method calls for performance logging
-            if TIME:
-                time_init = time.perf_counter()
-            line = html_edit(line)
-            line = regex_edit(line)
-            if TIME:
-                log_time += time.perf_counter() - time_init
-
-            f_out.write(line)
+        f_out.write(text_edit)
         f_out.close()
 
-        print(f"Processed {line_count} lines.")
         # Debug printout section
         if TIME or COUNT:
 
